@@ -1,0 +1,41 @@
+version: '3.1'
+
+services:
+  client:
+    build: .
+    volumes:
+      - "./frontend:/app"
+    environment:
+      REACT_APP_API_PORT: 3003
+    ports:
+      - "3031:3000"
+    depends_on:
+      - api
+
+  api:
+    build: .
+    environment:
+      DB_HOST: db
+      DB_NAME: adwords
+      DB_USER: test
+      DB_PASSWORD: test1234
+      PORT: 5000
+    volumes:
+      - "./backend:/app"
+    ports:
+      - "3003:5000"
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: adwords
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test1234
+    ports:
+      - "3307:3306"
+    volumes:
+      - ./docker/data/db:/var/lib/mysql
